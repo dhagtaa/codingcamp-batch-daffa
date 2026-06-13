@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Track and visualize your expenses with ease. Modern, intuitive expense tracker.">
+    <title>Expense Tracker</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="1"></circle>
+                    <path d="M12 1v6m0 6v6"></path>
+                    <path d="M4.22 4.22l4.24 4.24m5.08 5.08l4.24 4.24"></path>
+                    <path d="M1 12h6m6 0h6"></path>
+                    <path d="M4.22 19.78l4.24-4.24m5.08-5.08l4.24-4.24"></path>
+                </svg>
+                <h1>Expense Tracker</h1>
+            </div>
+            <button id="themeToggle" class="theme-btn" aria-label="Toggle theme">
+                <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- Overview Section -->
+        <section class="overview">
+            <div class="balance-widget">
+                <div class="balance-label">Total Balance</div>
+                <div id="totalBalance" class="balance-value">Rp 0,00</div>
+                <div class="balance-accent"></div>
+            </div>
+
+            <div class="chart-widget">
+                <div class="widget-header">
+                    <h3>Distribution</h3>
+                </div>
+                <div class="chart-box">
+                    <canvas id="expenseChart"></canvas>
+                </div>
+            </div>
+
+            <div class="stats-widget">
+                <div class="stat-item">
+                    <div class="stat-label">Month</div>
+                    <div id="currentMonth" class="stat-value">-</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Spending</div>
+                    <div id="monthlyTotal" class="stat-value">Rp 0,00</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Count</div>
+                    <div id="transactionCount" class="stat-value">0</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Input Section -->
+        <section class="input-section">
+            <h2>Add Expense</h2>
+            <form id="expenseForm" class="expense-form">
+                <div class="form-row">
+                    <div class="form-field">
+                        <input
+                            type="text"
+                            id="itemName"
+                            placeholder="What did you spend on?"
+                            class="form-input"
+                            required
+                        />
+                        <span id="itemNameError" class="error-msg" role="alert"></span>
+                    </div>
+
+                    <div class="form-field">
+                        <input
+                            type="number"
+                            id="amount"
+                            placeholder="Amount"
+                            class="form-input"
+                            step="1"
+                            min="0"
+                            required
+                        />
+                        <span id="amountError" class="error-msg" role="alert"></span>
+                    </div>
+
+                    <div class="form-field">
+                        <select id="category" class="form-input" required>
+                            <option value="">Category</option>
+                            <option value="Food">Food</option>
+                            <option value="Transport">Transport</option>
+                            <option value="Fun">Fun</option>
+                        </select>
+                        <span id="categoryError" class="error-msg" role="alert"></span>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Add</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Transactions Section -->
+        <section class="transactions-section">
+            <div class="section-header">
+                <h2>Recent Expenses</h2>
+                <div class="sort-box">
+                    <select id="sortSelector" class="sort-select">
+                        <option value="default">Latest</option>
+                        <option value="newest">Newest</option>
+                        <option value="oldest">Oldest</option>
+                        <option value="highest">High to Low</option>
+                        <option value="lowest">Low to High</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="transactionList" class="transaction-list">
+                <!-- Transactions rendered here -->
+            </div>
+
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <div class="empty-icon">📭</div>
+                <p>No expenses yet. Start by adding your first expense.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Notification -->
+    <div id="successNotification" class="notification" role="status" aria-live="polite">
+        <span class="notification-message">Added successfully</span>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
